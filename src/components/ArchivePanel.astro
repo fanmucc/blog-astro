@@ -13,7 +13,7 @@ interface Props {
 const { keyword, tags, categories } = Astro.props
 
 let posts = await getSortedPosts()
-
+console.log(posts?.map(post => post.data.title), '===posts===');
 if (Array.isArray(tags) && tags.length > 0) {
   posts = posts.filter(
     post =>

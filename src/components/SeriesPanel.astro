@@ -1,0 +1,126 @@
+---
+import { UNCATEGORIZED } from '@constants/constants'
+import I18nKey from '../i18n/i18nKey'
+import { i18n } from '../i18n/translation'
+import { getSortedPosts, getSeriesList } from '../utils/content-utils'
+import { getPostUrlBySlug } from '../utils/url-utils'
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+  keyword?: string
+  tags?: string[]
+  categories?: string[]
+}
+const { keyword, tags, categories } = Astro.props
+
+let posts = await getSortedPosts()
+
+let seriesList = await getSeriesList()
+
+// 处理时间
+function formatDate(date: Date) {
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  return `${month}-${day}`
+}
+---
+
+<div class="card-base px-8 py-6">
+    {
+      seriesList.map(series => (
+        <div>
+          <div class=" mb-3 text-3xl text-90 hover:text-[var(--primary)] dark:hover:text-[var(--primary)]">
+            {series.data.title}
+          </div>
+          <div class="text-75 mb-3.5 pr-4">
+            {series.data.description}
+          </div>
+          <div class="flex items-center text-75 mb-3.5 pr-4">
+            <div class="meta-icon"
+              >
+                <Icon name="material-symbols:book-2-outline-rounded" class="text-xl"></Icon>
+              </div> 
+              {series.data.category}
+          </div>
+          <div class="box-transition">
+            {/* 展开/收起按钮 */}
+            {series.data.children.length > 3 && (
+              <button
+                class="flex items-center text-[var(--primary)] hover:text-[var(--primary)] focus:outline-none toggle-series-button float-right"
+              >
+                <span>系列文章</span>
+                <svg
+                  class="w-4 h-4 ml-2 transition-transform"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            )}
+            {/* 清除浮动 */}
+            <div class="clear-both"></div>
+            {/* 系列文章列表 */}
+            {series.data.children.length > 0 && (
+              <div class="mt-4 series-content box-transition">
+                <ul class="space-y-2">
+                  {
+                    series.data.children.map((child) => (
+                      <li class="flex w-full">
+                        <a href={getPostUrlBySlug(child.slug)}
+                          aria-label={child.data.title}
+                          class="group hover:text-[var(--primary)] dark:hover:text-[var(--primary)] flex !justify-between !items-center w-full border-b border-transparent border-dashed hover:border-[var(--primary)]"
+                        >
+                          <span class="flex-inline w-[60%] text-left text-75 group-hover:text-[var(--primary)]  whitespace-nowrap overflow-ellipsis overflow-hidden" >{child.data.title}</span>
+                          <span class="text-sm text-30 group-hover:text-[var(--primary)] whitespace-nowrap overflow-ellipsis overflow-hidden text-30">{formatDate(child.data.published)}</span>
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      ))
+    }
+</div>
+<style>
+   .series-content {
+    display: grid;
+    grid-template-rows: 80px;
+    overflow: hidden;
+  }
+  .series-content.open {
+    grid-template-rows: 1fr;
+  }
+
+  .box-transition {
+    transition: all 0.2s linear;
+  }
+</style>
+{/* 展开/收起逻辑 */}
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.toggle-series-button');
+    buttons.forEach(button => {
+      button.addEventListener('click', toggleSeries);
+    });
+  });
+
+  function toggleSeries(event) {
+    const button = event.currentTarget;
+    // const content = button.nextElementSibling;
+    const content = button.parentElement.querySelector('.series-content');
+    const icon = button.querySelector('svg');
+
+    // 切换显示状态
+    // content.classList.toggle('hidden');
+    content.classList.toggle('open');
+    icon.classList.toggle('rotate-180');
+  }
+</script>

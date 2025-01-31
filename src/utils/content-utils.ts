@@ -7,16 +7,21 @@ export async function getSortedPosts(): Promise<
   { body: string, data: BlogPostData; slug: string }[]
 > {
   const allBlogPosts = (await getCollection('posts', ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true
+    return import.meta.env.PROD ? data?.draft !== true : true
   })) as unknown as { body: string, data: BlogPostData; slug: string }[]
 
-  const sorted = allBlogPosts.sort(
+  let sorted = allBlogPosts.sort(
     (a: { data: BlogPostData }, b: { data: BlogPostData }) => {
       const dateA = new Date(a.data.published)
       const dateB = new Date(b.data.published)
       return dateA > dateB ? -1 : 1
     },
   )
+
+  // 增加筛选，过滤掉系列并且为介绍的文章
+  sorted = sorted.filter(({ data }) => {
+    return !data?.introduce
+  })
 
   for (let i = 1; i < sorted.length; i++) {
     sorted[i].data.nextSlug = sorted[i - 1].slug
@@ -86,4 +91,44 @@ export async function getCategoryList(): Promise<Category[]> {
     ret.push({ name: c, count: count[c] })
   }
   return ret
+}
+
+export type Series = {
+  name: string
+  count: number
+}
+
+export async function getSeriesList() {
+  const allBlogPosts = await getCollection<'posts'>('posts', ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true
+  })
+
+  // 获取到简介数据
+  let seriesData = allBlogPosts?.filter(({ data }) => {
+    return data?.series && data?.introduce
+  })
+
+  // 将数据内容融合到简介里面
+  return seriesData.map((post) => {
+    // 找到同一分类下的所有系列文章
+    let children = allBlogPosts.filter(({ data }) => 
+      data.series && data.series === post.data.series && !data.introduce
+    )
+
+    children = children.sort(
+      (a: { data: any }, b: { data: any }) => {
+        const dateA = new Date(a.data.published)
+        const dateB = new Date(b.data.published)
+        return dateA < dateB ? -1 : 1
+      },
+    )
+    
+    return {
+      ...post,
+      data: {
+        ...post.data,
+        children
+      }
+    }
+  })
 }
