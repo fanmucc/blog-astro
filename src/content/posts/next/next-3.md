@@ -1,5 +1,5 @@
 ---
-title: Next.js 3
+title: Next.js 3 重启PM2
 published: 2024-04-04
 description: "Nextjs 第三集"
 tags: ["Next.js"]
