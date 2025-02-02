@@ -1,7 +1,8 @@
 # About
-This is the demo site for [fanmu]([text](https://github.com/fanmucc)).
+<!-- This is the demo site for [fanmucc]([text](https://github.com/fanmucc)). -->
+This is the demo site for <a href="https://github.com/fanmucc" target="_blank">fanmucc</a>.
 
-::github{repo="fanmucc/fanmu"}
+<!-- ::github{repo="fanmucc/fanmucc"} -->
 
 <!-- > ### Sources of images used in this site
 > - [Unsplash](https://unsplash.com/)
