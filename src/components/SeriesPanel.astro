@@ -112,15 +112,35 @@ function formatDate(date: Date) {
     });
   });
 
-  function toggleSeries(event) {
-    const button = event.currentTarget;
-    // const content = button.nextElementSibling;
-    const content = button.parentElement.querySelector('.series-content');
-    const icon = button.querySelector('svg');
+  // function toggleSeries(event) {
+  //   const button = event.currentTarget;
+  //   // const content = button.nextElementSibling;
+  //   const content = button.parentElement.querySelector('.series-content');
+  //   const icon = button.querySelector('svg');
 
     // 切换显示状态
     // content.classList.toggle('hidden');
-    content.classList.toggle('open');
-    icon.classList.toggle('rotate-180');
+    // content.classList.toggle('open');
+    // icon.classList.toggle('rotate-180');
+  // }
+
+  function toggleSeries(event) {
+    const button = event.currentTarget;
+    const content = button.parentElement.querySelector('.series-content');
+    const icon = button.querySelector('svg');
+
+    // 确保 content 不为 null 再切换类
+    if (content) {
+      content.classList.toggle('open');
+    } else {
+      console.error('未找到系列内容');
+    }
+
+    // 确保 icon 不为 null 再切换类
+    if (icon) {
+      icon.classList.toggle('rotate-180');
+    } else {
+      console.error('未找到图标');
+    }
   }
 </script>
