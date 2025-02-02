@@ -44,7 +44,7 @@ function formatDate(date: Date) {
           </div>
           <div class="box-transition">
             {/* 展开/收起按钮 */}
-            {series.data.children.length > 3 && (
+            {series.data.children.length > 3 && false && (
               <button
                 class="flex items-center text-[var(--primary)] hover:text-[var(--primary)] focus:outline-none toggle-series-button float-right"
               >
@@ -104,7 +104,7 @@ function formatDate(date: Date) {
   }
 </style>
 {/* 展开/收起逻辑 */}
-<script>
+<!-- <script>
  document.addEventListener('DOMContentLoaded', () => {
     const buttons = document.querySelectorAll('.toggle-series-button');
     buttons.forEach(button => {
@@ -143,4 +143,4 @@ function formatDate(date: Date) {
       console.error('未找到图标');
     }
   }
-</script>
+</script> -->
