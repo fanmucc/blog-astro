@@ -23,6 +23,8 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 export default defineConfig({
   site: "https://yancode.life",
   base: "/",
+  output: "static",
+  outDir: "dist",
   trailingSlash: "always",
   integrations: [
     tailwind(
