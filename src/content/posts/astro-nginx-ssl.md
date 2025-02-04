@@ -1,5 +1,5 @@
 ---
-title: 使用 Nginx 和 SSL 部署 Astro 站点
+title: 配置Nginx SSL证书
 published: 2025-02-04
 description: ''
 image: ''
